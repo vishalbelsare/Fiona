@@ -1,9 +1,8 @@
-import xml.etree.ElementTree as ET
 import logging
-import fiona
-with fiona._loading.add_gdal_dll_directories():
-    from fiona.ogrext import _get_metadata_item
-    from fiona.env import require_gdal_version
+import xml.etree.ElementTree as ET
+
+from fiona.env import require_gdal_version
+from fiona.ogrext import _get_metadata_item
 
 log = logging.getLogger(__name__)
 
@@ -146,18 +145,18 @@ def print_driver_options(driver):
                                  ("Dataset Creation Options", dataset_creation_options(driver)),
                                  ("Layer Creation Options", layer_creation_options(driver))]:
 
-        print("{option_type}:".format(option_type=option_type))
+        print(f"{option_type}:")
         if len(options) == 0:
             print("\tNo options available.")
         else:
             for option_name in options:
-                print("\t{option_name}:".format(option_name=option_name))
+                print(f"\t{option_name}:")
                 if 'description' in options[option_name]:
-                    print("\t\tDescription: {description}".format(description=options[option_name]['description']))
+                    print(f"\t\tDescription: {options[option_name]['description']}")
                 if 'type' in options[option_name]:
-                    print("\t\tType: {type}".format(type=options[option_name]['type']))
+                    print(f"\t\tType: {options[option_name]['type']}")
                 if 'values' in options[option_name] and len(options[option_name]['values']) > 0:
-                    print("\t\tAccepted values: {values}".format(values=",".join(options[option_name]['values'])))
+                    print(f"\t\tAccepted values: {','.join(options[option_name]['values'])}")
                 for attr_text, attribute in [('Default value', 'default'),
                                              ('Required', 'required'),
                                              ('Alias', 'aliasOf'),
@@ -167,8 +166,7 @@ def print_driver_options(driver):
                                              ('Scope', 'scope'),
                                              ('Alternative configuration option', 'alt_config_option')]:
                     if attribute in options[option_name]:
-                        print("\t\t{attr_text}: {attribute}".format(attr_text=attr_text,
-                                                                    attribute=options[option_name][attribute]))
+                        print(f"\t\t{attr_text}: {options[option_name][attribute]}")
         print("")
 
 
@@ -271,4 +269,3 @@ def supported_sub_field_types(driver):
         return None
 
     return [field_type for field_type in field_types_str.split(" ") if len(field_type) > 0]
-

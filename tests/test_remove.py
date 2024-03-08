@@ -8,26 +8,25 @@ import pytest
 
 import fiona
 from fiona.errors import DatasetDeleteError
+from fiona.model import Feature
 
 
 def create_sample_data(filename, driver, **extra_meta):
-    meta = {
-        'driver': driver,
-        'schema': {
-            'geometry': 'Point',
-            'properties': {}
-        }
-    }
+    meta = {"driver": driver, "schema": {"geometry": "Point", "properties": {}}}
     meta.update(extra_meta)
-    with fiona.open(filename, 'w', **meta) as dst:
-        dst.write({
-            'geometry': {
-                'type': 'Point',
-                'coordinates': (0, 0),
-            },
-            'properties': {},
-        })
-    assert(os.path.exists(filename))
+    with fiona.open(filename, "w", **meta) as dst:
+        dst.write(
+            Feature.from_dict(
+                **{
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": (0, 0),
+                    },
+                    "properties": {},
+                }
+            )
+        )
+    assert os.path.exists(filename)
 
 
 drivers = ["ESRI Shapefile", "GeoJSON"]
@@ -40,7 +39,7 @@ test_data = itertools.product(drivers, kinds, specify_drivers)
 def test_remove(tmpdir, kind, driver, specify_driver):
     """Test various dataset removal operations"""
     extension = {"ESRI Shapefile": "shp", "GeoJSON": "json"}[driver]
-    filename = "delete_me.{extension}".format(extension=extension)
+    filename = f"delete_me.{extension}"
     output_filename = str(tmpdir.join(filename))
 
     create_sample_data(output_filename, driver=driver)
@@ -63,6 +62,7 @@ def test_remove_nonexistent(tmpdir):
     assert not os.path.exists(filename)
     with pytest.raises(OSError):
         fiona.remove(filename)
+
 
 @requires_gpkg
 def test_remove_layer(tmpdir):

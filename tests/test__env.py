@@ -1,7 +1,8 @@
 """Tests of _env util module"""
 
-import pytest
 from unittest import mock
+
+import pytest
 
 from fiona._env import GDALDataFinder, PROJDataFinder
 
@@ -30,8 +31,7 @@ def mock_fhs(tmpdir):
 @pytest.fixture
 def mock_debian(tmpdir):
     """A fake Debian multi-install system"""
-    tmpdir.ensure("share/gdal/{}.{}/header.dxf".format(gdal_version.major,
-                                                       gdal_version.minor))
+    tmpdir.ensure(f"share/gdal/{gdal_version.major}.{gdal_version.minor}/header.dxf")
     tmpdir.ensure("share/proj/epsg")
     return tmpdir
 
@@ -69,7 +69,7 @@ def test_search_debian_gdal_data_failure(tmpdir):
 def test_search_debian_gdal_data(mock_debian):
     """Find GDAL data under Debian locations"""
     finder = GDALDataFinder()
-    assert finder.search_debian(str(mock_debian)) == str(mock_debian.join("share").join("gdal").join("{}.{}".format(gdal_version.major, gdal_version.minor)))
+    assert finder.search_debian(str(mock_debian)) == str(mock_debian.join("share").join("gdal").join(f"{gdal_version.major}.{gdal_version.minor}"))
 
 
 def test_search_gdal_data_wheel(mock_wheel):
@@ -85,7 +85,7 @@ def test_search_gdal_data_fhs(mock_fhs):
 def test_search_gdal_data_debian(mock_debian):
     """Find GDAL data under Debian locations"""
     finder = GDALDataFinder()
-    assert finder.search(str(mock_debian)) == str(mock_debian.join("share").join("gdal").join("{}.{}".format(gdal_version.major, gdal_version.minor)))
+    assert finder.search(str(mock_debian)) == str(mock_debian.join("share").join("gdal").join(f"{gdal_version.major}.{gdal_version.minor}"))
 
 
 def test_search_wheel_proj_data_failure(tmpdir):

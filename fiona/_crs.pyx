@@ -3,11 +3,7 @@
 Calls methods from GDAL's OSR module.
 """
 
-from __future__ import absolute_import
-
 import logging
-
-from six import string_types
 
 from fiona cimport _cpl
 from fiona._err cimport exc_wrap_pointer
@@ -38,7 +34,7 @@ def crs_to_wkt(crs):
         crs = crs.to_wkt()
 
     # First, check for CRS strings like "EPSG:3857".
-    if isinstance(crs, string_types):
+    if isinstance(crs, str):
         proj_b = crs.encode('utf-8')
         proj_c = proj_b
         OSRSetFromUserInput(cogr_srs, proj_c)
@@ -66,18 +62,18 @@ def crs_to_wkt(crs):
             proj_c = proj_b
             OSRImportFromProj4(cogr_srs, proj_c)
     else:
-        raise CRSError("Invalid input to create CRS: {}".format(crs))
+        raise CRSError(f"Invalid input to create CRS: {crs}")
 
     osr_set_traditional_axis_mapping_strategy(cogr_srs)
     OSRExportToWkt(cogr_srs, &proj_c)
 
     if proj_c == NULL:
-        raise CRSError("Invalid input to create CRS: {}".format(crs))
+        raise CRSError(f"Invalid input to create CRS: {crs}")
 
     proj_b = proj_c
     _cpl.CPLFree(proj_c)
 
     if not proj_b:
-        raise CRSError("Invalid input to create CRS: {}".format(crs))
+        raise CRSError(f"Invalid input to create CRS: {crs}")
 
     return proj_b.decode('utf-8')

@@ -5,7 +5,7 @@ class FionaError(Exception):
     """Base Fiona error"""
 
 
-class FionaValueError(ValueError):
+class FionaValueError(FionaError, ValueError):
     """Fiona-specific value errors"""
 
 
@@ -71,7 +71,19 @@ class GDALVersionError(FionaError):
     """
 
 
-class FionaDeprecationWarning(UserWarning):
+class TransformError(FionaError):
+    """Raised if a coordinate transformation fails."""
+
+
+class OpenerRegistrationError(FionaError):
+    """Raised when a Python file opener can not be registered."""
+
+
+class PathError(FionaError):
+    """Raised when a dataset path is malformed or invalid"""
+
+
+class FionaDeprecationWarning(DeprecationWarning):
     """A warning about deprecation of Fiona features"""
 
 

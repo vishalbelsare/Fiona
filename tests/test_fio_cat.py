@@ -1,12 +1,9 @@
 """Tests for `$ fio cat`."""
 
 
-import os
-import pytest
 from click.testing import CliRunner
 
 from fiona.fio.main import main_group
-from fiona.fio import cat
 
 
 def test_one(path_coutwildrnp_shp):
@@ -130,7 +127,7 @@ def test_multi_layer_fail(data_dir):
 def test_vfs(path_coutwildrnp_zip):
     runner = CliRunner()
     result = runner.invoke(main_group, [
-        'cat', 'zip://{}'.format(path_coutwildrnp_zip)])
+        'cat', f'zip://{path_coutwildrnp_zip}'])
     assert result.exit_code == 0
     assert result.output.count('"Feature"') == 67
 
